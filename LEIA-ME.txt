@@ -1,0 +1,87 @@
+TCESP Bady Bassitt — v0.9.18-BB
+PORTAL DE ACOMPANHAMENTO DAS CONTAS PÚBLICAS • MODELO v0.9.18
+
+OBJETIVO
+--------
+Portal estático de transparência baseado no modelo v0.9.18 (José Bonifácio / Adolfo), adaptado ao
+Município de Bady Bassitt/SP. Os dados vêm da API oficial do Portal da Transparência Municipal do TCESP.
+
+O QUE ESTE PACOTE CONTÉM
+------------------------
+Interface e configuração, já adaptadas a Bady Bassitt:
+- index.html
+- app.js
+- style.css
+- sw.js
+- seed-data.js            (substituído pelo arquivo gerado na coleta)
+- manifest.webmanifest
+- icon.svg
+- .nojekyll
+- LEIA-ME.txt
+
+Ferramentas de coleta da base permanente:
+- coletor.html            (coleta pelo navegador — caminho recomendado)
+- coletar.mjs             (coleta pelo Node.js 18+, alternativa)
+
+NÃO ACOMPANHA os arquivos data-2014.json … data-2026.json nem o baseline-manifest.json:
+eles são gerados pela coleta, na etapa 2 abaixo.
+
+ETAPA 1 — PUBLICAR A INTERFACE
+------------------------------
+1. Crie um repositório público, sugerido: TCE-SP-Bady-Bassitt.
+2. Envie os arquivos de interface e de coleta listados acima, todos na raiz do repositório.
+3. Ative o GitHub Pages em Settings > Pages, Branch: main, pasta /(root).
+4. Aguarde a publicação. O painel abrirá vazio, porque a base ainda não existe. É o esperado.
+
+ETAPA 2 — GERAR A BASE PERMANENTE
+---------------------------------
+Pelo navegador (recomendado):
+1. Abra https://SEU-USUARIO.github.io/TCE-SP-Bady-Bassitt/coletor.html
+   (abrir pelo GitHub Pages, e não por arquivo local, evita bloqueio de origem e habilita o cálculo do sha256).
+2. Clique em "Testar conexão e slug" e confirme que a API respondeu.
+3. Clique em "Iniciar coleta 2014–2026" e aguarde. A coleta leva alguns minutos.
+4. Autorize o navegador a baixar vários arquivos quando ele perguntar.
+5. Ao final estarão na pasta de downloads: data-2014.json … data-2026.json,
+   baseline-manifest.json e seed-data.js.
+
+Pelo Node.js (alternativa):
+   node coletar.mjs
+   node coletar.mjs 2014 2026 bady-bassitt     (para fixar intervalo e slug)
+
+ETAPA 3 — PUBLICAR A BASE
+-------------------------
+1. Envie ao repositório, na raiz: data-2014.json … data-2026.json e baseline-manifest.json.
+2. Substitua o seed-data.js do repositório pelo seed-data.js gerado na coleta.
+3. Não coloque os JSONs em subpastas: o carregador espera os arquivos na raiz do site.
+4. Recarregue o painel. Ele lerá o manifesto, conferirá as contagens de cada exercício e montará a base local.
+
+SLUG DA API
+-----------
+Este pacote está configurado para o slug "bady-bassitt". O coletor testa também bady-bassit, badybassitt e badybassit. Se o coletor identificar outra variação,
+ajuste a mesma palavra em dois pontos do app.js:
+- const MUNICIPIO_API="bady-bassitt";
+- function tceExpenseUrl(...) .../municipio/bady-bassitt/${year}/despesas
+
+PERENIZAÇÃO
+-----------
+- Banco local: tcesp-bady-bassitt-v6.
+- Não alterar DBN por mudança visual ou simples nova versão.
+- Não apagar baseline-manifest.json nem data-AAAA.json em atualizações comuns.
+- Para atualizar a fotografia-base, substituir apenas os anos intencionalmente atualizados e atualizar o manifesto.
+- O botão "Restaurar base original" recompõe a base local a partir desses arquivos permanentes.
+- Atualização mês a mês: botão "Atualizar mês TCESP", que consome a API diretamente no navegador.
+
+FONTE
+-----
+Portal da Transparência Municipal do Tribunal de Contas do Estado de São Paulo (TCESP).
+Endpoints mensais utilizados:
+/api/json/despesas/bady-bassitt/{ano}/{mes}
+/api/json/receitas/bady-bassitt/{ano}/{mes}
+
+OBSERVAÇÃO
+----------
+Os módulos de sinais de auditoria são triagens de dados, não conclusões sobre regularidade, natureza
+jurídica da despesa ou responsabilidade de agentes/fornecedores. A confirmação exige o exame dos
+documentos do procedimento correspondente.
+
+Build: 0918BB-20260920
